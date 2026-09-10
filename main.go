@@ -9,7 +9,7 @@ func main() {
 	for {
 		var input string
 
-		fmt.Println("\nEnter Total Semester (or type 'exit' to quit):")
+		fmt.Print("\nEnter Total Semesters (or type 'exit' to quit): ")
 		fmt.Scan(&input)
 
 		if input == "exit" {
@@ -20,32 +20,40 @@ func main() {
 		n, err := strconv.Atoi(input)
 
 		if err != nil || n <= 0 {
-			fmt.Println("Invalid input. Please enter a valid number.")
+			fmt.Println("Invalid input. Please enter a valid positive number.")
 			continue
 		}
 
-		graderPoint := make([]float64, n)
-		creditHour := make([]float64, n)
-		var upper float64
-		var creditHourSum float64
-		var result float64
+		var totalGradePoints float64
+		var totalCreditHours float64
+		var sgpa, credit float64
 
 		for i := 1; i <= n; i++ {
-			fmt.Printf("Enter your SGPA for s :- %d ", i)
-			fmt.Scan(&graderPoint[i-1])
+			fmt.Printf("Enter SGPA for semester %d: ", i)
+			_, err := fmt.Scan(&sgpa)
+			if err != nil || sgpa < 0 {
+				fmt.Println("Invalid SGPA. Please start over.")
+				var discard string
+				fmt.Scanln(&discard)
+				break
+			}
 
-			fmt.Printf("Enter your Credit Hour for s :- %d ", i)
-			fmt.Scan(&creditHour[i-1])
+			fmt.Printf("Enter Credit Hours for semester %d: ", i)
+			_, err = fmt.Scan(&credit)
+			if err != nil || credit <= 0 {
+				fmt.Println("Invalid Credit Hour. Please start over.")
+				var discard string
+				fmt.Scanln(&discard)
+				break
+			}
 
-			upper += graderPoint[i-1] * creditHour[i-1]
-			creditHourSum += creditHour[i-1]
+			totalGradePoints += sgpa * credit
+			totalCreditHours += credit
 		}
 
-		if creditHourSum > 0 {
-			result = upper / creditHourSum
-			fmt.Printf("Your CGPA is: %.2f\n", result)
-		} else {
-			fmt.Println("Total credit hours cannot be zero.")
+		if totalCreditHours > 0 {
+			cgpa := totalGradePoints / totalCreditHours
+			fmt.Printf("Your CGPA is: %.2f\n", cgpa)
 		}
 	}
 }
